@@ -1,0 +1,36 @@
+version : "3.1"
+services:
+  dev:
+    build: 
+        context: ./.docker/dev
+        args: 
+            - SSH_PASSWORD=${SSH_PASSWORD:-password}
+    ports:
+      - "2222:22"
+    volumes:
+      - app:/var/www
+      - jetbrains_config:/root/.config/JetBrains
+      - jetbrains_cache:/root/.cache/JetBrains
+      - jetbrains_user_refs:/root/.java/.userPrefs/jetbrains
+      - jetbrains_share:/root/.local/share/JetBrains
+      
+  web:
+    build: 
+        context: ./.docker/web
+        args: 
+            - PROJECT_NAME=${PROJECT_NAME:-project}
+            - GIT_EMAIL=${GIT_EMAIL:-you@example.com}
+            - GIT_USERNAME=${GIT_USERNAME:-you}
+    ports:
+      - "80:80"
+    volumes:
+      - app:/var/www
+    environment:
+      - PROJECT_NAME=${PROJECT_NAME:-project}
+
+volumes:
+  app:
+  jetbrains_cache:
+  jetbrains_config:
+  jetbrains_user_refs:
+  jetbrains_share:
